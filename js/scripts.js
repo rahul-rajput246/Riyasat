@@ -844,15 +844,77 @@ function initRiyasat() {
 }
 //   Parallax ------------------
 function initparallax() {
-    // Disable jittery JS Scrollax parallax to prevent background images from shaking on scroll
-    $(".bg.par-elem").css({
-        "height": "100%",
-        "top": "0",
-        "transform": "none"
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        $(".background-vimeo, .background-youtube-wrapper").remove();
+        return;
+    }
+
+    var items = [];
+    $("[data-scrollax-parent='true']").each(function () {
+        var $parent = $(this);
+        var children = [];
+        $parent.find("[data-scrollax]").each(function () {
+            var raw = $(this).attr("data-scrollax") || "";
+            var match = raw.match(/translateY:\s*['"]?(-?\d+)(%|px)?['"]?/);
+            if (match) {
+                children.push({
+                    el: this,
+                    val: parseFloat(match[1]),
+                    unit: match[2] || "px"
+                });
+            }
+        });
+        if (children.length > 0) {
+            items.push({
+                parent: this,
+                children: children
+            });
+        }
     });
-    $(".col_par, .wave-bg").css({
-        "transform": "none"
-    });
+
+    if (items.length === 0) return;
+
+    var ticking = false;
+
+    function renderParallax() {
+        var winH = window.innerHeight || document.documentElement.clientHeight;
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var rect = item.parent.getBoundingClientRect();
+            // Skip elements well outside viewport
+            if (rect.bottom < -100 || rect.top > winH + 100) {
+                continue;
+            }
+
+            // Calculate normalized scroll factor: 0 at center, -1 at bottom, +1 at top
+            var parentCenter = rect.top + rect.height / 2;
+            var winCenter = winH / 2;
+            var totalRange = (winH + rect.height) / 2;
+            var factor = (winCenter - parentCenter) / totalRange;
+            if (factor < -1) factor = -1;
+            if (factor > 1) factor = 1;
+
+            for (var j = 0; j < item.children.length; j++) {
+                var child = item.children[j];
+                var offset = (child.val * factor).toFixed(2);
+                child.el.style.transform = "translate3d(0, " + offset + child.unit + ", 0)";
+            }
+        }
+        ticking = false;
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(renderParallax);
+            ticking = true;
+        }
+    }
+
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", requestTick, { passive: true });
+    requestTick();
+    $(window).on("load", requestTick);
 }
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();

@@ -253,13 +253,15 @@ blockquote p {
 	background-origin: content-box;
 	backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
-	transform: none;
 }
 .par-elem {
-	height: 100% !important;
-	top: 0 !important;
-	transform: none !important;
-	will-change: auto !important;
+	height: 130%;
+	top: -15%;
+	will-change: transform;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
 }
 .overlay {
 	position: absolute;
@@ -1757,7 +1759,9 @@ section.parallax-section.hero-section .section-title h2 {
 }
 .col_par  , .wave-bg{
 	transition: none !important;
-	transform: none !important;
+	will-change: transform;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
 }
 .illustration_bg {
 	position:absolute;
