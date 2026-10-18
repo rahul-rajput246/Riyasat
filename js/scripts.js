@@ -844,33 +844,15 @@ function initRiyasat() {
 }
 //   Parallax ------------------
 function initparallax() {
-    var a = {
-        Android: function () {
-            return navigator.userAgent.match(/Android/i);
-        },
-        BlackBerry: function () {
-            return navigator.userAgent.match(/BlackBerry/i);
-        },
-        iOS: function () {
-            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-        },
-        Opera: function () {
-            return navigator.userAgent.match(/Opera Mini/i);
-        },
-        Windows: function () {
-            return navigator.userAgent.match(/IEMobile/i);
-        },
-        any: function () {
-            return a.Android() || a.BlackBerry() || a.iOS() || a.Opera() || a.Windows();
-        }
-    };
-    trueMobile = a.any();
-    if (null === trueMobile) {
-        var b = new Scrollax();
-        b.reload();
-        b.init();
-    }
-    if (trueMobile) $(".background-vimeo , .background-youtube-wrapper ").remove();
+    // Disable jittery JS Scrollax parallax to prevent background images from shaking on scroll
+    $(".bg.par-elem").css({
+        "height": "100%",
+        "top": "0",
+        "transform": "none"
+    });
+    $(".col_par, .wave-bg").css({
+        "transform": "none"
+    });
 }
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
