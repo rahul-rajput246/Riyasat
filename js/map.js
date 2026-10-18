@@ -5,14 +5,14 @@ function singleMap() {
     }
     //   Your locations ------------------ 
     var locations = [
-        ['Restabook in Manhattan', 40.7143528, -74.0059731],
-        ['Restabook in Bronx', 40.7168183, -73.9973402],
-        ['Restabook in Queens', 40.73334016, -73.99330616],
+        ['Zaffran - Connaught Place, New Delhi', 28.6328, 77.2197],
+        ['Zaffran - Lower Parel, Mumbai', 18.9930, 72.8258],
+        ['Zaffran - Indiranagar, Bengaluru', 12.9784, 77.6408],
     ];
     //  map settings ------------------	
     var single_map = new google.maps.Map(document.getElementById('singleMap'), {
-        zoom: 13,
-        center: new google.maps.LatLng(40.73334016, -73.99330616),
+        zoom: 14,
+        center: new google.maps.LatLng(28.6328, 77.2197),
         scrollwheel: false,
         zoomControl: false,
         fullscreenControl: false,

@@ -1,5 +1,5 @@
 //   all ------------------
-function initRestabook() {
+function initZaffran() {
     "use strict";
     //   loader ------------------
     firstLoad();
@@ -876,7 +876,8 @@ document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
 });  
 //   Init All ------------------
+var initRestabook = initZaffran;
 $(document).ready(function () {
-    initRestabook();
+    initZaffran();
     initparallax();
 });
