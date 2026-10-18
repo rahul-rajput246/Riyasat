@@ -5,9 +5,9 @@ function singleMap() {
     }
     //   Your locations ------------------ 
     var locations = [
-        ['Zaffran - Connaught Place, New Delhi', 28.6328, 77.2197],
-        ['Zaffran - Lower Parel, Mumbai', 18.9930, 72.8258],
-        ['Zaffran - Indiranagar, Bengaluru', 12.9784, 77.6408],
+        ['Riyasat - Connaught Place, New Delhi', 28.6328, 77.2197],
+        ['Riyasat - Lower Parel, Mumbai', 18.9930, 72.8258],
+        ['Riyasat - Indiranagar, Bengaluru', 12.9784, 77.6408],
     ];
     //  map settings ------------------	
     var single_map = new google.maps.Map(document.getElementById('singleMap'), {
