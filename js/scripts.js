@@ -643,71 +643,281 @@ function initRiyasat() {
         }, 1500);
     });
     //   Contact form------------------
-    $(document).on('submit', '#contactform', function () {
-        var a = $(this).attr("action");
-        $("#message2").slideUp(750, function () {
-            $("#message2").hide();
-            $("#submit_cnt").attr("disabled", "disabled");
-            $.post(a, {
-                name: $("#name2").val(),
-                email: $("#email2").val(),
-                phone: $("#phone2").val(),
-                subject: $("#subject2").val(),
-                comments: $("#comments2").val()
+    $(document).on('submit', '#contactform', function (e) {
+        e.preventDefault();
+        var name = $("#name2").val() ? $("#name2").val().trim() : '';
+        var email = $("#email2").val() ? $("#email2").val().trim() : '';
+        var phone = $("#phone2").val() ? $("#phone2").val().trim() : '';
+        var comments = $("#comments2").val() ? $("#comments2").val().trim() : '';
 
-            }, function (a) {
-                document.getElementById("message2").innerHTML = a;
-                $("#message2").slideDown("slow");
-                $("#submit_cnt").removeAttr("disabled");
-                if (null != a.match("success")) $("#contactform").slideDown("slow");
-            });
+        $("#message2").slideUp(300, function () {
+            if (!name || !email || !phone || !comments || !email.includes('@') || !email.includes('.')) {
+                var errHtml = '<div style="color: #ff6b6b; background: rgba(255, 107, 107, 0.12); border: 1px solid #ff6b6b; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px; text-align: left; font-size: 13px;">' +
+                    '<i class="fas fa-exclamation-triangle"></i> Please fill in your name, valid email, contact number, and message.' +
+                '</div>';
+                document.getElementById("message2").innerHTML = errHtml;
+                $("#message2").slideDown(400);
+                return;
+            }
+
+            var successHtml = '<div class="success_message" style="background: rgba(197, 157, 95, 0.15); border: 1px solid #c59d5f; padding: 18px 20px; border-radius: 6px; color: #fff; margin-bottom: 20px; text-align: left;">' +
+                '<h4 style="color: #c59d5f; margin: 0 0 6px; font-family: \'Playfair Display\', serif; font-size: 18px;"><i class="fas fa-check-circle"></i> Message Sent Successfully</h4>' +
+                '<p style="margin: 0 0 6px; font-size: 13px; color: #f0f0f0;">Thank you, <strong>' + name + '</strong>. Our guest relations team has received your message and will respond to <strong>' + email + '</strong> promptly.</p>' +
+                '<p style="margin: 0; font-size: 11px; color: #bbb; font-style: italic;"><i class="fal fa-info-circle"></i> Portfolio Demonstration Mode: In live production, this dispatches via email API / CRM integration.</p>' +
+            '</div>';
+
+            document.getElementById("message2").innerHTML = successHtml;
+            $("#message2").slideDown(500);
+            $('#contactform')[0].reset();
         });
         return false;
     });
     $(document).on('keyup', '#contactform input, #contactform textarea', function () {
         $("#message2").slideUp(1500);
     });
-    // reservation form------------------
-    $(document).on('submit', '#reservationform', function () {
-        var a = $(this).attr("action");
-        $("#reserv-message").slideUp(750, function () {
-            $("#reserv-message").hide();
-            $.post(a, {
-                name: $("#name").val(),
-                email: $("#email").val(),
-                phone: $("#phone").val(),
-                numperson: $("#persons").val(),
-                resdate: $("#res_date").val(),
-                restime: $("#resrv-time").val(),
-                comments: $("#comments").val()
-            }, function (a) {
-                document.getElementById("reserv-message").innerHTML = a;
-                $("#reserv-message").slideDown("slow");
 
-                if (null != a.match("success")) {
-                    $("#reserv-message").slideDown("slow");
-                }
-            });
+    // reservation form------------------
+    $(document).on('submit', '#reservationform', function (e) {
+        e.preventDefault();
+        var name = $("#name").val() ? $("#name").val().trim() : '';
+        var email = $("#email").val() ? $("#email").val().trim() : '';
+        var phone = $("#phone").val() ? $("#phone").val().trim() : '';
+        var persons = $("#persons").val() || '2 People';
+        var resdate = $("#res_date").val() || 'Selected Date';
+        var restime = $("#resrv-time").val() || '7:00 pm';
+
+        $("#reserv-message").slideUp(300, function () {
+            if (!name || !email || !phone || !email.includes('@') || !email.includes('.')) {
+                var errHtml = '<div style="color: #ff6b6b; background: rgba(255, 107, 107, 0.15); border: 1px solid #ff6b6b; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px; text-align: left; font-size: 13px;">' +
+                    '<i class="fas fa-exclamation-triangle"></i> Please provide your name, valid email address, and phone number to complete reservation.' +
+                '</div>';
+                document.getElementById("reserv-message").innerHTML = errHtml;
+                $("#reserv-message").slideDown(400);
+                return;
+            }
+
+            var successHtml = '<div class="success_message" style="background: rgba(197, 157, 95, 0.15); border: 1px solid #c59d5f; padding: 18px 20px; border-radius: 6px; color: #fff; margin-bottom: 20px; text-align: left;">' +
+                '<h4 style="color: #c59d5f; margin: 0 0 8px; font-family: \'Playfair Display\', serif; font-size: 18px;"><i class="fas fa-check-circle"></i> Reservation Request Received</h4>' +
+                '<p style="margin: 0 0 6px; font-size: 13px; color: #f0f0f0;">Honored Guest <strong>' + name + '</strong>, your table for <strong>' + persons + '</strong> on <strong>' + resdate + ' at ' + restime + '</strong> has been recorded.</p>' +
+                '<p style="margin: 0; font-size: 11px; color: #bbb; font-style: italic;"><i class="fal fa-info-circle"></i> Portfolio Demonstration: In live deployment, an automated SMS & Email confirmation is dispatched to ' + email + '.</p>' +
+            '</div>';
+
+            document.getElementById("reserv-message").innerHTML = successHtml;
+            $("#reserv-message").slideDown(500);
+            $('#reservationform')[0].reset();
+            $('.chosen-select').niceSelect('update');
         });
         return false;
     });
-    $("#reservationform input, #reservationform textarea ").keyup(function () {
+    $("#reservationform input, #reservationform textarea").keyup(function () {
         $("#reserv-message").slideUp(1500);
     });
-    //   mailchimp------------------
-    $("#subscribe").ajaxChimp({
-        language: "eng",
-        url: "https://gmail.us1.list-manage.com/subscribe/post?u=1fe818378d5c129b210719d80&amp;id=a2792f681b"
+
+    //   Newsletter Subscription (Clean Demonstration) ------------------
+    $(document).on('submit', '#subscribe', function (e) {
+        e.preventDefault();
+        var email = $("#subscribe-email").val() ? $("#subscribe-email").val().trim() : '';
+        var $msg = $(this).find(".subscribe-message");
+        if (!email || !email.includes('@') || !email.includes('.')) {
+            $msg.html('<span style="color: #ff6b6b; font-size: 12px;"><i class="fa fa-warning"></i> Please enter a valid e-mail address.</span>').show();
+        } else {
+            $msg.html('<span style="color: #c59d5f; font-size: 12px;"><i class="fa fa-check"></i> Welcome to the Riyasat Connoisseurs Club!</span>').show();
+            $("#subscribe-email").val('');
+            setTimeout(function () { $msg.fadeOut(1500); }, 4000);
+        }
     });
-    $.ajaxChimp.translations.eng = {
-        submit: "Submitting...",
-        0: '<i class="fa fa-check"></i> We will be in touch soon!',
-        1: '<i class="fa fa-warning"></i> You must enter a valid e-mail address.',
-        2: '<i class="fa fa-warning"></i> E-mail address is not valid.',
-        3: '<i class="fa fa-warning"></i> E-mail address is not valid.',
-        4: '<i class="fa fa-warning"></i> E-mail address is not valid.',
-        5: '<i class="fa fa-warning"></i> E-mail address is not valid.'
-    };
+
+    // ======================================
+    // Cart State & Interactivity Engine
+    // ======================================
+    var riyasatCart = [
+        { id: 1, name: "Murgh Malai Tikka", price: 750, count: 1, img: "images/menu/1.jpg" },
+        { id: 2, name: "Galouti Kebab & Taftan", price: 850, count: 1, img: "images/menu/2.jpg" },
+        { id: 3, name: "Riyasati Shahi Shorba", price: 450, count: 1, img: "images/menu/3.jpg" }
+    ];
+
+    function showToast(message) {
+        var $toast = $(".riyasat-toast");
+        if ($toast.length === 0) {
+            $toast = $('<div class="riyasat-toast"><i class="fas fa-shopping-bag"></i><span class="toast-msg"></span></div>').appendTo("body");
+        }
+        $toast.find(".toast-msg").text(message);
+        $toast.addClass("show");
+        setTimeout(function () {
+            $toast.removeClass("show");
+        }, 2800);
+    }
+
+    function updateCartUI() {
+        var totalCount = 0;
+        var subtotal = 0;
+        var $cartList = $(".widget-posts ol");
+
+        $cartList.empty();
+        riyasatCart.forEach(function (item, idx) {
+            totalCount += item.count;
+            subtotal += item.price * item.count;
+            var li = $(
+                '<li class="clearfix">' +
+                    '<a href="product-single.html" class="widget-posts-img"><img src="' + item.img + '" class="respimg" alt="' + item.name + '"></a>' +
+                    '<div class="widget-posts-descr">' +
+                        '<a href="product-single.html" title="' + item.name + '">' + item.name + '</a>' +
+                        '<div class="widget-posts-descr_calc clearfix">' + item.count + ' <span>x</span> ₹' + item.price.toLocaleString('en-IN') + '</div>' +
+                    '</div>' +
+                    '<div class="clear-cart_button" data-idx="' + idx + '" title="Remove item"><i class="fal fa-times"></i></div>' +
+                '</li>'
+            );
+            $cartList.append(li);
+        });
+
+        $(".show-cart_count").text(totalCount);
+        $(".header-cart_title span").text(totalCount + (totalCount === 1 ? " item" : " items"));
+        $(".header-cart_wrap_total_item span").text("₹" + subtotal.toLocaleString('en-IN'));
+
+        if (typeof aps !== "undefined" && aps) {
+            aps.update();
+        }
+    }
+
+    // Add to cart click handler
+    $(document).on("click", ".add_cart", function (e) {
+        e.preventDefault();
+        var $parent = $(this).closest(".hero-menu-item, .shop-item, .product-item, .room-item");
+        var name = $parent.find("h6, h4, .shop-item-title, .product-title").first().text().replace(/\s*₹[\d,]+\s*/g, '').trim() || "Royal Specialty";
+        var priceText = $parent.find(".hero-menu-item-price, .shop-item_price, .price").first().text().replace(/[^\d]/g, '');
+        var price = parseInt(priceText, 10) || 650;
+        var img = $parent.find("img").first().attr("src") || "images/menu/1.jpg";
+
+        var existing = riyasatCart.find(function (i) { return i.name === name; });
+        if (existing) {
+            existing.count += 1;
+        } else {
+            riyasatCart.push({
+                id: Date.now(),
+                name: name,
+                price: price,
+                count: 1,
+                img: img
+            });
+        }
+        updateCartUI();
+        showToast("Added \"" + name + "\" to cart");
+    });
+
+    // Remove from mini-cart
+    $(document).on("click", ".clear-cart_button", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var idx = $(this).data("idx");
+        if (typeof idx !== "undefined" && idx >= 0 && idx < riyasatCart.length) {
+            var removed = riyasatCart.splice(idx, 1);
+            updateCartUI();
+            if (removed && removed[0]) {
+                showToast("Removed \"" + removed[0].name + "\" from cart");
+            }
+        }
+    });
+
+    // Close header mini-cart and share on click outside
+    $(document).on("click", function (e) {
+        if (!$(e.target).closest(".header-cart_wrap, .sc_btn").length) {
+            if ($(".header-cart_wrap").hasClass("vis-cart")) {
+                hideCart();
+            }
+        }
+        if (!$(e.target).closest(".share-wrapper, .showshare").length) {
+            if (!$(".share-wrapper").hasClass("isShare")) {
+                hideShare();
+            }
+        }
+    });
+
+    // Cart page table dynamic recalculations
+    function recalcCartPage() {
+        var subtotal = 0;
+        $(".checkout-table tbody tr").each(function () {
+            var $row = $(this);
+            var $countInput = $row.find("input.order-count");
+            if ($countInput.length > 0) {
+                var count = parseInt($countInput.val(), 10) || 1;
+                var priceText = $row.find("td:nth-child(3) .order-money, td:nth-child(3)").text().replace(/[^\d\.]/g, '');
+                var price = parseFloat(priceText) || 0;
+                var total = count * price;
+                $row.find("td:nth-child(5) .order-money").text("₹" + total.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+                subtotal += total;
+            }
+        });
+        var shipping = subtotal > 0 ? 150 : 0;
+        var discount = window.appliedDiscount || 0;
+        var grandTotal = Math.max(0, subtotal + shipping - discount);
+
+        $(".cart-totals .total-table tbody tr:nth-child(1) td").text("₹" + subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+        $(".cart-totals .total-table tbody tr:nth-child(2) td").text("₹" + shipping.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+        $(".cart-totals .total-table tbody tr:nth-child(3) td").text("₹" + grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+    }
+
+    $(document).on("input change", ".order-count", function () {
+        recalcCartPage();
+    });
+
+    $(document).on("click", ".pr-remove a", function (e) {
+        e.preventDefault();
+        $(this).closest("tr").fadeOut(300, function () {
+            $(this).remove();
+            recalcCartPage();
+        });
+    });
+
+    $(document).on("click", ".coupon-holder .btn-a", function (e) {
+        e.preventDefault();
+        var code = $("input[name='cartcoupon']").val() ? $("input[name='cartcoupon']").val().trim() : '';
+        if (code) {
+            window.appliedDiscount = 250;
+            recalcCartPage();
+            showToast("Coupon applied: ₹250 discount!");
+        } else {
+            showToast("Please enter a coupon code.");
+        }
+    });
+
+    $(document).on("click", ".btn-uc", function (e) {
+        e.preventDefault();
+        recalcCartPage();
+        showToast("Cart updated successfully.");
+    });
+
+    $(document).on("click", ".cart-totals_btn", function (e) {
+        e.preventDefault();
+        window.location.href = "checkout.html";
+    });
+
+    // Checkout form validation & graceful demo confirmation
+    $(document).on("submit", ".check-out_wrap form", function (e) {
+        e.preventDefault();
+        var $form = $(this);
+        var name = $form.find("input[name='name']").val() ? $form.find("input[name='name']").val().trim() : '';
+        var email = $form.find("input[name='email']").val() ? $form.find("input[name='email']").val().trim() : '';
+        var phone = $form.find("input[name='phone']").val() ? $form.find("input[name='phone']").val().trim() : '';
+        var city = $form.find("input[name='city']").val() ? $form.find("input[name='city']").val().trim() : '';
+        var code = $form.find("input[name='code']").val() ? $form.find("input[name='code']").val().trim() : '';
+
+        if (!name || !email || !phone || !city || !code) {
+            alert("Please fill in all required customer details (Name, Email, Phone, City, PIN code).");
+            return;
+        }
+
+        var orderId = "RY-" + Math.floor(100000 + Math.random() * 900000);
+        var html = '<div class="checkout-success" style="background: rgba(197, 157, 95, 0.15); border: 2px solid #c59d5f; padding: 25px; border-radius: 8px; text-align: left; color: #fff; margin-top: 20px;">' +
+            '<h3 style="color: #c59d5f; font-family: \'Playfair Display\', serif; margin: 0 0 10px; font-size: 24px;"><i class="fas fa-check-circle"></i> Order Confirmed!</h3>' +
+            '<p style="font-size: 15px; margin: 0 0 8px;">Thank you, <strong>' + name + '</strong>. Your order <strong>#' + orderId + '</strong> has been placed.</p>' +
+            '<p style="font-size: 13px; color: #d0d0d0; margin: 0 0 12px;">Delivery to: <strong>' + city + ' - ' + code + '</strong> | Contact: ' + phone + '</p>' +
+            '<div style="background: rgba(0,0,0,0.4); padding: 12px 16px; border-radius: 4px; font-size: 12px; color: #ccc; font-style: italic; margin-bottom: 20px;">' +
+                '<i class="fal fa-info-circle"></i> Portfolio Demonstration: In live production, this checkout step securely connects with Razorpay / Stripe payment gateway and sends WhatsApp/SMS order tracking.' +
+            '</div>' +
+            '<a href="index.html" class="btn color-bg" style="display: inline-block;">Return to Home</a>' +
+        '</div>';
+        $form.html(html);
+    });
     function videoint() {
         //   Video------------------
         var v = $(".background-youtube-wrapper").data("vid");

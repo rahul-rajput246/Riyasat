@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rahul-rajput246.github.io/Riyasat/sitemap.xml
